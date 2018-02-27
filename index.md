@@ -4,14 +4,14 @@ layout: default
 
 # [](#header-1)FPGA炼丹炉
 
-[神经网络的FPGA实现之坑一： MATLAB Neural Network Toolbox](./_post/20180223_FPGA_keng1.md)
+[神经网络的FPGA实现之坑一： MATLAB Neural Network Toolbox](./post/2018-02-23-FPGA-keng-1)
 
-[神经网络的FPGA实现之坑二： MATLAB HDL Coder](./_post/20180223_FPGA_keng2.md)
+[神经网络的FPGA实现之坑二： MATLAB HDL Coder](./post/2018-02-23-FPGA-keng-2)
 
 --------------------------------------------------------------------------------------------
 
 
-
+[link to another page](./_post_test/2018-02-23-FPGA-keng-1)
 
 Text can be **bold**, _italic_, ~~strikethrough~~ or `keyword`.
 
