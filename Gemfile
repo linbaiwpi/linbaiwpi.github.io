@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'github-pages'
 gem "json"
 gem "jekyll"
 gem "jekyll-sitemap"
