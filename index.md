@@ -24,7 +24,9 @@ layout: default
 --------------------------------------------------------------------------------------------
 
 # [](#header-1)About Me
-I am currently a PhD student in Department Electrical and Computer Engineering, Worcester Polytechinic Institute. My research interest are: `Computer Vision`, `Deep Learning`,`Autonomous Driving`,`FPGA`.
+I am currently a PhD student in Department Electrical and Computer Engineering, Worcester Polytechinic Institute. My research interest are: `Computer Vision`, `Deep Learning`, `Autonomous Driving`, `FPGA`.
+
+<i class="far fa-file"></i> [Résumé](./docs/resume.pdf)
 
 --------------------------------------------------------------------------------------------
 
