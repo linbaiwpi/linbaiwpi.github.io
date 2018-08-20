@@ -3,14 +3,36 @@ layout: default
 ---
 
 # [](#header-1)FPGA炼丹炉
+![](./image/fpga.jpg)
 
 [神经网络的FPGA实现之坑一： MATLAB Neural Network Toolbox](./post/2018-02-23-FPGA-keng-1)
 
 [神经网络的FPGA实现之坑二： MATLAB HDL Coder](./post/2018-02-23-FPGA-keng-2)
 
+[神经网络的FPGA实现之坑三：基于HDL Coder的DDR4接口模型详解](./post/2018-08-20-FPGA-keng-3)
+
+--------------------------------------------------------------------------------------------
+# [](#header-1)Tips for Matlab Vision HDL Toolbox
+![](./image/visionhdl.png)
+
+--------------------------------------------------------------------------------------------
+# [](#header-1)Research
+![](./image/research.jpg)
+
+[My Publication](./post/papers)
+
 --------------------------------------------------------------------------------------------
 
+# [](#header-1)About Me
+I am currently a PhD student in Department Electrical and Computer Engineering, Worcester Polytechinic Institute. My research interest are: `Computer Vision`, `Deep Learning`,`Autonomous Driving`,`FPGA`.
 
+--------------------------------------------------------------------------------------------
+
+# [](#header-1)Contact
+<i class="fa fa-weixin fa-2x"></i> [白磷](./post/contact) <i class="far fa-envelope fa-2x"></i> [Gmail](./post/contact) <i class="fas fa-book fa-2x"></i> [Publications](https://scholar.google.com/citations?user=L7gsnOEAAAAJ&hl=en)
+
+
+<!---
 [link to another page](./_post_test/2018-02-23-FPGA-keng-1)
 
 Text can be **bold**, _italic_, ~~strikethrough~~ or `keyword`.
@@ -130,3 +152,13 @@ Long, single-line code blocks should not wrap. They should horizontally scroll i
 ```
 The final element.
 ```
+-->
+
+<head> 
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/all.js"></script> 
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/v4-shims.js"></script> 
+</head> 
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css">
+
+
+
