@@ -15,8 +15,8 @@ In Circuits and Systems (ISCAS), 2018 IEEE International Symposium on 2018, Flor
 
 3. [J] [A CNN Accelerator on FPGA Using Depthwise Separable Convolution](../docs/tcas2_2018_1.pdf).
 **Bai L**, Zhao Y, Huang X.
-IEEE Transactions on Circuits and Systems II: Express Briefs. 2018 Oct;57(10).
+IEEE Transactions on Circuits and Systems II: Express Briefs. Oct 2018;65(10).
 
 4. [J] [Respiration and Heartbeat Rates Measurement Based on Autocorrelation Using IR-UWB Radar](../docs/tcas2_2018_2.pdf).
 Shen H, Xu C, Yang Y, Sun L Cai Z, **Bai L**, Clancy E, Huang X.
-IEEE Transactions on Circuits and Systems II: Express Briefs. 2018 Oct;TBA.
+IEEE Transactions on Circuits and Systems II: Express Briefs. Oct 2018;65(10).
