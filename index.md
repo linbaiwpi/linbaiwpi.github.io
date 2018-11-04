@@ -12,8 +12,10 @@ layout: default
 [神经网络的FPGA实现之坑三：基于HDL Coder的DDR4接口模型详解](./post/2018-08-20-FPGA-keng-3)
 
 --------------------------------------------------------------------------------------------
-# [](#header-1)Tips for Matlab Vision HDL Toolbox
+# [](#header-1)Tips for Matlab HDL Toolbox
 ![](./image/visionhdl.png)
+
+[基于Matlab HDL Coder的8x8实矩阵QR分解](./post/2018-11-04-hdlcoder-1)
 
 --------------------------------------------------------------------------------------------
 # [](#header-1)Research
