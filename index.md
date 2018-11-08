@@ -17,6 +17,8 @@ layout: default
 
 [基于Matlab HDL Coder的8x8实矩阵QR分解](./post/2018-11-04-hdlcoder-1)
 
+[关于MATLAB神经网络生成HDL的实例](./post/2018-11-07-hdlcoder-2)
+
 --------------------------------------------------------------------------------------------
 # [](#header-1)Research
 ![](./image/research.jpg)

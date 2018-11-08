@@ -1,6 +1,6 @@
 ---
 layout: default
-title: FPGA
+title: Papers
 ---
 
 ## My Papers
@@ -15,8 +15,12 @@ In Circuits and Systems (ISCAS), 2018 IEEE International Symposium on 2018, Flor
 
 3. [J] [A CNN Accelerator on FPGA Using Depthwise Separable Convolution](../docs/tcas2_2018_1.pdf).
 **Bai L**, Zhao Y, Huang X.
-IEEE Transactions on Circuits and Systems II: Express Briefs. Oct 2018;65(10).
+IEEE Transactions on Circuits and Systems II: Express Briefs, vol.65, no.10, pp.1415-1419. Oct 2018.
 
 4. [J] [Respiration and Heartbeat Rates Measurement Based on Autocorrelation Using IR-UWB Radar](../docs/tcas2_2018_2.pdf).
 Shen H, Xu C, Yang Y, Sun L Cai Z, **Bai L**, Clancy E, Huang X.
-IEEE Transactions on Circuits and Systems II: Express Briefs. Oct 2018;65(10).
+IEEE Transactions on Circuits and Systems II: Express Briefs, vol.65, no.10, pp.1470-1474, Oct 2018.
+
+5. [J] [ChipNet: Real-Time LiDAR Processing for Drivable Region Segmentation on an FPGA](../post/404).
+Lyu Y, **Bai L**, Huang X.
+IEEE Transactions on Circuits and Systems I: Regular Papers, (accepted).
