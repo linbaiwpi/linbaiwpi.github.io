@@ -21,6 +21,10 @@ IEEE Transactions on Circuits and Systems II: Express Briefs, vol.65, no.10, pp.
 Shen H, Xu C, Yang Y, Sun L Cai Z, **Bai L**, Clancy E, Huang X.
 IEEE Transactions on Circuits and Systems II: Express Briefs, vol.65, no.10, pp.1470-1474, Oct 2018.
 
-5. [J] [ChipNet: Real-Time LiDAR Processing for Drivable Region Segmentation on an FPGA](../post/404).
+5. [J] [ChipNet: Real-Time LiDAR Processing for Drivable Region Segmentation on an FPGA](../docs/tcas1_2018.pdf).
 Lyu Y, **Bai L**, Huang X.
-IEEE Transactions on Circuits and Systems I: Regular Papers, (accepted).
+IEEE Transactions on Circuits and Systems I: Regular Papers, (early access).
+
+6. [J] [Camera-Based Blind Spot Detection with a General Purpose Lightweight Neural Network](https://www.mdpi.com/2079-9292/8/2/233).
+Zhao Y, **Bai L**, Lyu Y, Huang X.
+Electronics, vol.8, no.2, pp.233, Feb 2019.
