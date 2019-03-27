@@ -2,6 +2,12 @@
 layout: default
 ---
 
+# [](#header-1)Tutorials of Xilinx ZCU104
+
+[1. How to format SD card and run ZCU104 with pre-built petalinux](./post/zcu104_tutorial_1)
+[2. Connect PC and ZCu104 directly using ethernet cable](./post/zcu104_tutorial_2)
+--------------------------------------------------------------------------------------------
+
 # [](#header-1)FPGA炼丹炉
 ![](./image/fpga.jpg)
 
