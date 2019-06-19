@@ -26,6 +26,8 @@ layout: default
 
 [关于MATLAB神经网络生成HDL的实例](./post/2018-11-07-hdlcoder-2)
 
+[HDL Coder生成Xilinx DSP48E1注意事项](./post/2019-06-18-hdlcoder-3)
+
 --------------------------------------------------------------------------------------------
 # [](#header-1)Research
 ![](./image/research.jpg)
