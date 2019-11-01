@@ -8,6 +8,8 @@ layout: default
 
 [2. Connect PC and ZCu104 directly using ethernet cable](./post/zcu104_tutorial_2)
 
+[3. Velodyne driver running on PYNQ on Xilinx MPSoc ZCU104 platform](./post/zcu104_tutorial_3)
+
 --------------------------------------------------------------------------------------------
 # [](#header-1)FPGA炼丹炉
 ![](./image/fpga.jpg)
