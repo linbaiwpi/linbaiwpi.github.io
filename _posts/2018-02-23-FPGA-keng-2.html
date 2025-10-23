@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>FPGA | 老白的白</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="FPGA" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/post/2018-02-23-FPGA-keng-2.html" />
+<meta property="og:url" content="http://localhost:4000/post/2018-02-23-FPGA-keng-2.html" />
+<meta property="og:site_name" content="老白的白" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="FPGA" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","headline":"FPGA","url":"http://localhost:4000/post/2018-02-23-FPGA-keng-2.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>老白的白</h1>
+        <h2></h2>
+
+        <section id="downloads">
+          
+          <a href="" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h2 id="神经网络的fpga实现之坑二-matlab-hdl-coder">神经网络的FPGA实现之坑二： MATLAB HDL Coder</h2>
+
+<p>新版MATLAB有个隐藏关卡，可以使用HDL Coder生成Altera Arria 10 SoC Development Kit的DDR4接口，然后MATLAB可以作为AXI4的master来对DDR4 SDRAM进行读写操作。</p>
+
+<p>所需Hardware Support Package:</p>
+
+<ol>
+  <li>HDL Coder Support Package for Intel FPGA Boards</li>
+  <li>HDL Verifier Support Package for Intel FPGA Boards</li>
+</ol>
+
+<p>根据参考【1】，走流程（此处仅大致介绍）</p>
+
+<ul>
+  <li>先设置tool path，hdlsetuptoolpath(‘ToolName’,’Altera Quartus II’,’ToolPath’,’C:\intelFPGA\17.0\quartus\bin64’)</li>
+  <li>打开对应的设计open_system(‘hdlcoder_external_memory’)，不用理会此处的错误</li>
+</ul>
+
+<p><img src="/image/2018-02-23-FPGA-keng-2/1.jpg" alt="" /></p>
+
+<ul>
+  <li>打开workflow advisor，如果弹出warning，不必理会，设置对应的板卡以及软件并且Run All</li>
+  <li>进行第二步之前，打开3.1.2 Set Advanced Options，设置Reset type为Asynchronous并保存，回到2 Prepare Model For HDL Code Generation，Run All</li>
+  <li>在3.1.1 Set Basic Options务必选择VHDL，目前Verilog并不能生成可用的IP（如有可以用的情况，请告知）</li>
+  <li>运行直至4.3
+按照参考【1】，我们应该使用hdlcoder_external_memory_hw_run函数来验证这个功能的正确性，然鹅我们会看到以下画面</li>
+</ul>
+
+<p><img src="/image/2018-02-23-FPGA-keng-2/2.jpg" alt="" /></p>
+
+<p>这是因为此函数针对目标为Xilinx器件，需要我们手动改成针对Altera的，拷贝函数源文件至本地，将22行的Xilinx改为Altera，运行！然鹅我们会看到以下画面</p>
+
+<p><img src="/image/2018-02-23-FPGA-keng-2/3.jpg" alt="" /></p>
+
+<p>不用慌张，我们可以自己验证DDR4的读写是否正确，先使用命令 h = aximaster(‘Altera’) 创建一个AXI master的对象，然后使用函数writememory和readmemory来写和读内存信息</p>
+
+<p>例如往地址0写入值100，» writememory(h, 0, 100)，再读地址0，» readmemory(h, 0,1)</p>
+
+<p><img src="/image/2018-02-23-FPGA-keng-2/4.jpg" alt="" /></p>
+
+<p>备注：如果无法运行最后一步烧写FPGA的话，八成是sof文件没有生成，可用Quartus打开工程文件自己生成bit文件，并烧写。或者使用MATLAB的命令 filProgramFPGA(‘Altera Quartus II’,’quartus_prj\system.sof’,1) 来烧写</p>
+
+<p>讨论：</p>
+<ol>
+  <li>关于为何需要设置Asynchronous reset，这是由于Altera家FPGA的结构与Xilinx的不同，后者的reset使用会占用设计资源，而async reset会消耗更多的设计资源，这也是为什么Xilinx推崇不要使用reset，万一需要使用local reset而不是global reset的原因，且最好使用sync reset，而Altera的FPGA则不同，async和sync并不会影响所消耗的资源，而其DSP的mapping需要async reset来map流水线寄存器。至于为什么会有这样的架构，欢迎大家一起来探讨。</li>
+  <li>关于MATLAB这个External Memory Access例程的好处，使用这样的架构可以快速生成可以使用的接口，加速验证框架和算法的正确性。此例展示了计算矩阵和向量的乘法的算法，可以很容易的替换成其他算法来仿真验证，缩短开发周期。</li>
+</ol>
+
+<p>参考：</p>
+<ol>
+  <li><a href="https://www.mathworks.com/help/hdlcoder/examples/performing-large-matrix-operation-on-fpga-using-external-memory.html">Performing Large Matrix Operation on FPGA using External Memory</a></li>
+  <li><a href="https://www.mathworks.com/help/supportpkg/alterafpgaboards/examples/access-fpga-external-memory-using-matlab-as-axi-master.html">Access FPGA External Memory using MATLAB as AXI Master</a></li>
+</ol>
+
+<p><a href="./../">back</a></p>
+
+      </section>
+    </div>
+
+    
+  </body>
+</html>

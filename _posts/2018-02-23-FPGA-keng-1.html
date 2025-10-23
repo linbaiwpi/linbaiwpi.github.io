@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>FPGA | 老白的白</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="FPGA" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/post/2018-02-23-FPGA-keng-1.html" />
+<meta property="og:url" content="http://localhost:4000/post/2018-02-23-FPGA-keng-1.html" />
+<meta property="og:site_name" content="老白的白" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="FPGA" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","headline":"FPGA","url":"http://localhost:4000/post/2018-02-23-FPGA-keng-1.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>老白的白</h1>
+        <h2></h2>
+
+        <section id="downloads">
+          
+          <a href="" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h2 id="神经网络的fpga实现之坑一-matlab-neural-network-toolbox">神经网络的FPGA实现之坑一： MATLAB Neural Network Toolbox</h2>
+
+<p>最近重新“沦为”FPGA攻城狮，做一些关于神经网络的implement工作，借知乎记录一下自己踩过的坑…</p>
+
+<p>工具：MATLAB 2018a，Arria 10 SoC Development Kit，Quartus II 17.0 Standard Edition</p>
+
+<p>今天做第一件事情，使用MATLAB的neural network toolbox来对即将编写的硬件代码做定点运算的软件仿真，从而确定硬件实现的正确性。</p>
+
+<p><strong>坑：如何添加自定义的Layer，尤其是这个Layer里的运算不可导的情况</strong></p>
+
+<p>此处，pre-trained的数据被直接truncate成定点来计算。</p>
+
+<p>基于MATLAB自身的demo <a href="https://www.mathworks.com/help/nnet/examples/create-simple-deep-learning-network-for-classification.html?requestedDomain=true">Create Simple Deep Learning Network for Classification</a> 来介绍。打开方式很简单，在Command Window输入openExample(‘nnet/TrainABasicConvolutionalNeuralNetworkForClassificationExample’)并回车。</p>
+
+<p>直接运行会得到如下结果，validation的正确率为97.96%。
+<img src="/image/2018-02-23-FPGA-keng-1/1.jpg" alt="" /></p>
+
+<p>下面，我们将会添加一层Quantization，从而可以对比软件计算的定点结果和硬件计算的定点结果。</p>
+
+<p>根据Neural Network Toolbox User’s Guide中Define a Layer with Learnable Parameters章节，我们自己编写了一个quant层，如下</p>
+
+<pre><code class="language-Matlab">classdef quantLayer &lt; nnet.layer.Layer
+    methods
+        function Z = predict(layer, X)
+            % Forward input data through the layer and output the result
+            Z = arrayfun(@quant,X);
+        end
+        function [dLdX] = backward(layer, X, Z, dLdZ, memory)
+            % Forward input data through the layer and output the result
+            dLdX = dLdZ;
+        end
+    end
+end
+</code></pre>
+<p>在这个类的定义中，predict给出的是forward的函数，Z是输出，X是输入，backward给出的是你希望的倒数，dLdZ是从后传递进来的倒数，此处我的predict只是将浮点数truncate成定点数，并不希望对反向传递有任何影响，故设倒数为1，从而有，dLdX = dLdZ * 1。注意，predict和backward的输入必须按照以上写法，即使函数中没有使用。</p>
+
+<p>其中，quant函数（1bit sign，8bit integer，8bit fraction）为</p>
+
+<pre><code class="language-Matlab">function Z = quant(X)
+    shift_8b = floor(X * 2^8);
+    if shift_8b &gt;= 0
+        sat = min(shift_8b, 2^16-1);
+    else
+        sat = max(shift_8b, -2^16);
+    end
+    Z = sat/2^8;
+end
+</code></pre>
+<p>这里不能使用fi函数，以及直接对矩阵或者张量进行计算，这是由于网络会生成gpuArray，以上方法无法对其进行计算，所以需要使用arrayfun来解决这个问题。其中数字可以通过参数给出，如function Z = quant(X, int, fra)。</p>
+
+<p>改造一下神经网络，添加quant层，去除batch normalization层</p>
+
+<pre><code class="language-Matlab">layers = [
+    imageInputLayer([28 28 1])
+    
+    convolution2dLayer(3,16,'Padding',1)
+    quantLayer
+    reluLayer
+    maxPooling2dLayer(2,'Stride',2)
+    
+    convolution2dLayer(3,32,'Padding',1)
+    quantLayer
+    reluLayer
+    maxPooling2dLayer(2,'Stride',2)
+    
+    convolution2dLayer(3,32,'Padding',1)
+    quantLayer
+    reluLayer
+    
+    fullyConnectedLayer(10)
+    quantLayer
+    softmaxLayer
+    classificationLayer];
+</code></pre>
+
+<p>训练结果如下，validation正确率在99.48%
+<img src="/image/2018-02-23-FPGA-keng-1/2.jpg" alt="" /></p>
+
+<p><strong>讨论：以上实验仅仅针对validation的正确率做比较，其实并不严谨。且目前并没有完整的理论证明，定点的神经网络计算要比传统的32位single格式的更加好。</strong></p>
+
+<p>MATLAB的神经网络工具包对于科研人员非常友好，可以很方便的自定义所有计算层，但是由于其训练的optimizer目前只支持SGDM，应用受到一些限制，虽然在File Exchange中有人实现了Adam，但我并没有去研究怎么使用，只是把它当作一个验证工具。</p>
+
+<p><a href="./../">back</a></p>
+
+      </section>
+    </div>
+
+    
+  </body>
+</html>

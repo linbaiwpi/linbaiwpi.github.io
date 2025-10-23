@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>FPGA | 老白的白</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="FPGA" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/post/2018-08-20-FPGA-keng-3.html" />
+<meta property="og:url" content="http://localhost:4000/post/2018-08-20-FPGA-keng-3.html" />
+<meta property="og:site_name" content="老白的白" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="FPGA" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","headline":"FPGA","url":"http://localhost:4000/post/2018-08-20-FPGA-keng-3.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>老白的白</h1>
+        <h2></h2>
+
+        <section id="downloads">
+          
+          <a href="" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h2 id="神经网络的fpga实现之坑三基于hdl-coder的ddr4接口模型详解">神经网络的FPGA实现之坑三：基于HDL Coder的DDR4接口模型详解</h2>
+
+<p>MATLAB HDL Coder自动生成Arria 10 SoC Development Kit DDR4接口模型详解</p>
+
+<p>由于MathWorks还没有推出针对Intel Altera的DDR接口生成这个demo的解释，在这我们给出一些自己的理解。</p>
+
+<p>MATLAB版本：2018a
+FPGA硬件平台：Arria 10 SoC Development Kit
+FPGA软件平台：Intel FPGA 17.0 Standard Edition
+Simulink模型介绍：</p>
+
+<p>下图给出了Simulink的模型，其中，DUT为未来会转换成HDL的模块
+<img src="/image/2018-08-20-FPGA-keng-3/1.png" alt="" /></p>
+
+<p>进入DUT模块，可以看到三个模块，DDR_Access（DDRA）、Matrix_Vector_Multiplication（MVM）和Internal_Memory（IM）。
+<img src="/image/2018-08-20-FPGA-keng-3/2.png" alt="" /></p>
+
+<p>MVM模块实现矩阵和向量的乘法，IM模块用于测试，当matrix_mul_on为F时，MVM的结果不会被写入DDR。下面重点介绍DDRA
+<img src="/image/2018-08-20-FPGA-keng-3/3.png" alt="" /></p>
+
+<p>从上图可以看到，axim_rd_data和ram_wr_data直接相连，ram_read_data和axim_wr_data直接相连，也就意味着，写入DDR4的数据也被会写入IM，从IM读出的数据也会被写入DDR4.</p>
+
+<p>数据通路如下：</p>
+
+<p><img src="/image/2018-08-20-FPGA-keng-3/4.png" alt="" />
+<img src="/image/2018-08-20-FPGA-keng-3/5.png" alt="" /></p>
+
+<p>用Intel FPGA软件打开RTL Viewer，可以看到
+<img src="/image/2018-08-20-FPGA-keng-3/6.png" alt="" /></p>
+
+<p>Altera的EMIF（External Memory Interface）使用的是Avalon MM（Memory Mapped）Interface. 上图中间模块起接口转换作用，并且连接了DUT和MATLAB as master模块，给MATLAB提供控制DDR4的接口。</p>
+
+<p>使用DSP Toolbox的Logic Analyzer可以查看波形，单击下图红笔框出的图标，选取Logic Analyzer
+<img src="/image/2018-08-20-FPGA-keng-3/7.png" alt="" />
+<img src="/image/2018-08-20-FPGA-keng-3/8.png" alt="" /></p>
+
+<p>参考：</p>
+
+<ol>
+  <li><a href="https://www.mathworks.com/help/hdlcoder/examples/performing-large-matrix-operation-on-fpga-using-external-memory.html">Performing Large Matrix Operation on FPGA using External Memory</a></li>
+</ol>
+
+<p><a href="./../">back</a></p>
+
+      </section>
+    </div>
+
+    
+  </body>
+</html>

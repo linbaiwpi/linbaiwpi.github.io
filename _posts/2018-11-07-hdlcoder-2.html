@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>FPGA | 老白的白</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="FPGA" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/post/2018-11-07-hdlcoder-2.html" />
+<meta property="og:url" content="http://localhost:4000/post/2018-11-07-hdlcoder-2.html" />
+<meta property="og:site_name" content="老白的白" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="FPGA" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","headline":"FPGA","url":"http://localhost:4000/post/2018-11-07-hdlcoder-2.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>老白的白</h1>
+        <h2></h2>
+
+        <section id="downloads">
+          
+          <a href="" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h2 id="关于matlab神经网络生成hdl的实例">关于MATLAB神经网络生成HDL的实例</h2>
+<p><strong>感谢TM同学的信息以及验证</strong></p>
+
+<p>昨天有同学跟我说Matlab 2018b更新了一个实例，讲解如何使用定点化函数来生成神经网络算法的HDL代码，实例链接如下。下面就这个Example，我来讲讲我的一些看法。</p>
+
+<p><a href="https://www.mathworks.com/help/fixedpoint/ug/fixed-point-conversion-of-regression-neural-networks-using-fxpopt.html">Convert Neural Network Algorithms to Fixed-Point using fxpopt and Generate HDL Code</a></p>
+
+<p><strong>先搬出观点：</strong></p>
+
+<p>这个实例更多的在于知道使用Matlab的定点化工具，并不适用于一般我们认为的深度神经网络的HDL生成
+对于浅神经网络（shallow neural network）或者多层感知机（multi-layer perceptron）的HDL代码生成，这个还是很有用的</p>
+
+<p><strong>下面简单说下这个实例：</strong></p>
+
+<p>在MATLAB输入命令“edit fxpoptdemo_neural_networks_script”，就会出现本例的所有脚本。这个脚本大致可以分成以下部分</p>
+
+<p>浮点模型自动生成
+基于浮点模型的定点化改进
+定点化工具使用
+生成HDL代码
+首先，1-47行实现的是浮点模型的自动生成，本质上就是调用Neural Network Pattern Recognition App，导入Example Data Set - engine_dataset，训练并且生成Simulink模型。</p>
+
+<p>其次，要根据定点化的原则<a href="https://www.mathworks.com/help/fixedpoint/ug/best-practices-for-using-the-fixed-point-tool-to-propose-data-types-for-your-simulink-model.html">Best Practices for Fixed-Point Workflow</a>来一方面对于之后的定点化做准备，另一方面将HDL Coder无法识别的模块转换成可识别的模块（部分）。比如图1为浮点模型的Process Input 1模块，图2为定点/可转换成HDL的模块（此处很大可能是由MATLAB代码生成的Simulink模块）。</p>
+
+<figure class="whole">
+	<img src="/image/2018-11-07-hdlcoder-2/img1.jpg" />
+	<figcaption>图1 浮点模型的Process Input 1模块</figcaption>
+</figure>
+
+<figure class="whole">
+	<img src="/image/2018-11-07-hdlcoder-2/img2.jpg" />
+	<figcaption>图2 定点模型的Process Input 1 模块</figcaption>
+</figure>
+
+<p>将图2稍作整理后，我们可以看出（图3），其实现的功能和图1完全一样。只不过整理后的模块全部支持HDL工具箱</p>
+
+<figure class="whole">
+	<img src="/image/2018-11-07-hdlcoder-2/img3.jpg" />
+	<figcaption>图3 整理后的定点模型的Process Input 1 模块</figcaption>
+</figure>
+
+<p>应用时，这部分需要用户自行对不同模块进行编辑。所以对于大规模的神经网络，这一步会非常麻烦。可供选择的方法有使用MATLAB code进入需要改动的Simulink模块进行操作，但这一步非常繁琐复杂，即使Mathworks工程师也并不推荐这种方法。有兴趣的同学可以参考一下链接</p>
+
+<p>【1】<a href="https://blogs.mathworks.com/simulink/2010/01/21/building-models-with-matlab-code/">Building Models with MATLAB Code</a></p>
+
+<p>【2】<a href="https://www.mathworks.com/help/simulink/ug/approach-modeling-programmatically.html">Programmatic Modeling Basics</a></p>
+
+<p>也有一些并没有转换的，比如第一层中的tansig函数，之后会使用LUT来实现。</p>
+
+<p>从113行开始，将会对activation function进行优化，使用LookUp Table代替tansig函数。并且对替代函数进行验证。BreakpointSpecification选用EvenPow2Spacing，LUT模块会自动根据输入进行divider-free插值，大大减少对于片上资源的消耗。</p>
+
+<p><strong>下面谈谈感想：</strong></p>
+
+<p>这个实例提供了一个定点化的流程以及基本技巧，对于不需要循环的浅网络计算有很大的指导意义，对于循环计算的效果还有待验证，毕竟误差在循环中会累计。这个例子中需要手动修改的模块过多，weight和bias都是直接在模块中设置，实现深度网络的时候会要花费大量时间修改。Mathworks会在不久的将来发布deep learning HDL toolbox，到时候对于深度神经网络的HDL实现会变得更加容易。其实对于一般的神经网络完全可以使用HDL Coder自己实现，卷积可以使用Vision HDL toolbox里的image filter实现，累加器使用HDL Coder中的sum+delay模块实现，fully connected使用matrix multiplication模块实现。难度在于如何与DDR一起工作来降低片上BRAM的使用量。</p>
+
+<p><a href="./../">back</a></p>
+
+
+      </section>
+    </div>
+
+    
+  </body>
+</html>

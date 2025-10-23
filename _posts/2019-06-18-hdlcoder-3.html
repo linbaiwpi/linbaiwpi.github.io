@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>FPGA | 老白的白</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="FPGA" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/post/2019-06-18-hdlcoder-3.html" />
+<meta property="og:url" content="http://localhost:4000/post/2019-06-18-hdlcoder-3.html" />
+<meta property="og:site_name" content="老白的白" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="FPGA" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","headline":"FPGA","url":"http://localhost:4000/post/2019-06-18-hdlcoder-3.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>老白的白</h1>
+        <h2></h2>
+
+        <section id="downloads">
+          
+          <a href="" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h2 id="hdl-coder生成xilinx-dsp48e1注意事项">HDL Coder生成Xilinx DSP48E1注意事项</h2>
+
+<p>下图为Xilinx 7系列FPGA中使用的DSP48E1的框图</p>
+
+<figure class="whole">
+	<img src="/image/2019-06-18-hdlcoder-3/dsp48e1.jpg" />
+	<figcaption>图1 Xilinx DSP48E1 Series</figcaption>
+</figure>
+
+<p>从中我们可以看出，输入有两个寄存器，如果用到后面的加法/减法器，与乘法器之间会有一个寄存器，然后加法/减法器的输出有一个寄存器P。
+因此，如果我们<strong>仅使用一个乘法器</strong>时，建议在前后都加上一个delay模块并且设置delay length=2。</p>
+
+<figure class="whole">
+	<img src="/image/2019-06-18-hdlcoder-3/multi_setting.jpg" />
+	<figcaption>图2 乘法器使用建议设置</figcaption>
+</figure>
+
+<p>如果我们<strong>设计一个乘法+加法器</strong>时（如图3），</p>
+<figure class="whole">
+	<img src="/image/2019-06-18-hdlcoder-3/mult_add.jpg" />
+	<figcaption>图3 乘法+加法器使用建议设置</figcaption>
+</figure>
+<ul>
+  <li>建议使用delay length=2的delay模块连接乘法和加法模块（乘法加法之间使用delay length=1也可以）</li>
+  <li>右键设置所有delay的HDL Block Properties中ResetType为none，这样做是为了防止全局的reset信号控制内部寄存器，需要额外逻辑，造成Vivado编译器无法优化DSP</li>
+</ul>
+
+<figure class="whole">
+	<img src="/image/2019-06-18-hdlcoder-3/hdl_block_property.jpg" />
+	<figcaption>图4 HDL Block Properties</figcaption>
+</figure>
+
+<p>如果使用使用HDL Coder生成Vivado项目并且综合之后，我们会发现，这个模块例化了两个DSP模块，其中一个只使用了乘法器，结果通过POUT送入另一个DSP单元进行加法运算。
+如图5，绿色框和红色框分别代表一个例化的DSP。</p>
+<figure class="whole">
+	<img src="/image/2019-06-18-hdlcoder-3/impl_result.jpg" />
+	<figcaption>图5 图3的综合结果</figcaption>
+</figure>
+
+<p><a href="./../">back</a></p>
+
+      </section>
+    </div>
+
+    
+  </body>
+</html>
