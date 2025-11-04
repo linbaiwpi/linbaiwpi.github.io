@@ -104,7 +104,7 @@ You’re welcome to download and test it on your own system. If you have any que
 
 In the next tutorial, we’ll explore: Which modules can be converted into HDL code, How to deploy the model to hardware, And some key implementation techniques.
 
-Specifically, we’ll generate the HDL code for the above model and verify it on a ZedBoard + FMC-HDMI-CAM setup. We’ll also learn how to use Line Buffers, how to generate patches, and how to implement a photo-to-sketch transformation (sample image from [GitHub](wyfunique/Convert-Photo-to-Sketch); please contact me if any copyright issues arise).
+Specifically, we’ll generate the HDL code for the above model and verify it on a ZedBoard + FMC-HDMI-CAM setup. We’ll also learn how to use Line Buffers, how to generate patches, and how to implement a photo-to-sketch transformation (sample image from [wyfunique's GitHub](https://github.com/wyfunique/Convert-photo-to-sketch); please contact me if any copyright issues arise).
 
 The resulting output is shown below (right: input image; left: hardware-implemented output).
 
